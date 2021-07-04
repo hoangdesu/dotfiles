@@ -1,2 +1,4 @@
 # dotfiles
-My custom configurations for Zsh, Neovim and Terminal emulators
+My preparation to transition my life into living inside the terminal 🙄
+
+![home](./images/main.jpg)
