@@ -9,8 +9,10 @@ filetype plugin on
 set nu relativenumber			" relative line number
 set termguicolors				" enables true color in terminal
 set cursorline					" highlights current line
+set expandtab					" TABS MAKE MORE MONEY THAN SPACES!
 set tabstop=4 softtabstop=4		" tab = 4space 
 set smartindent
+set autoindent
 set shiftwidth=4
 set mouse=a						" allow scrolling with the mouse, a=all modes
 set scrolloff=8
@@ -19,7 +21,10 @@ set noerrorbells				" fuk bell noise
 set ignorecase					" ignore case when search by default
 set smartcase					" perform a case sensitive search with capitalized letters
 set noswapfile
-set nobackup
+set nobackup					" recommended by coc	
+set nowritebackup				" recommended by coc
+set splitbelow					" horizontal split will go below current buffer
+set splitright					" vertical split will go to the right of current buffer
 set undodir=~/.config/nvim/undodir
 set undofile					" works well with undo tree
 set incsearch					" incremental search
@@ -29,7 +34,10 @@ set noshowmode					" hides duplicated show mode
 set ruler
 set encoding=UTF-8
 set background=dark
-set updatetime=300
+set updatetime=300				" faster completion
+" set paste						" disable auto comment, also will break autoindent :(
+set wildmode=longest,list,full	" autocompletion
+
 "====================================================================="
 
 
@@ -62,14 +70,20 @@ call plug#begin('~/.config/nvim/autoload/plugged')
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }			" Fuzzy Finder
 	Plug 'mattn/emmet-vim'										" Emmet
 	Plug 'jiangmiao/auto-pairs'									" Autopairs
-	Plug 'preservim/nerdtree'									" NERDTree
+	Plug 'preservim/nerdtree'									" Directory listing
 	Plug 'AndrewRadev/tagalong.vim'
 	Plug 'alvan/vim-closetag'
 	Plug 'dense-analysis/ale'
 	Plug 'tpope/vim-surround'
 	Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 	Plug 'mbbill/undotree'
-	
+	Plug 'francoiscabrol/ranger.vim'
+	Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+	Plug 'sheerun/vim-polyglot'
+	Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }	" Display colors in VIM
+	Plug 'mhinz/vim-startify'
+	Plug 'junegunn/goyo.vim'
+
 	" Cóc :))
 	Plug 'neoclide/coc.nvim', {'branch': 'release'}
 	" Plug 'pappasam/coc-jedi', { 'do': 'yarn install --frozen-lockfile && yarn build' }
@@ -77,7 +91,6 @@ call plug#begin('~/.config/nvim/autoload/plugged')
 call plug#end()
 
 "====================================================================="
-
 
 
 
@@ -96,15 +109,53 @@ call plug#end()
 
 " -> Set color scheme last to take effect
 " colorscheme gruvbox
-" colorscheme synthwave84
+colorscheme synthwave84
 " colorscheme codedark
-colorscheme tokyonight
+" colorscheme tokyonight
 " colorscheme material
 " colorscheme one
 " colorscheme dracula
 " colorscheme atom-dark
 
 "====================================================================="
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ----- CUSTOM MAPPINGS ----- 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:mapleader = "\<Space>"			" Map Leader key to Space
+
+" Ctrl-s or Space-w: save file
+nnoremap <C-s>			:w<CR>					
+nnoremap <leader>w		:w<CR>
+
+" Space-q: save and quit
+nnoremap <leader>q		:x<CR>	
+
+" Remove search highlight with Esc x2 or Ctrl-C
+nnoremap <silent> <Esc><Esc>	:nohlsearch<CR>
+nnoremap <silent> <C-c>			:nohlsearch<CR>
+
+" Source current init.vim file: Space-r
+nnoremap <leader>so :so %<CR>
+
+" Better window navigation
+" :wincmd == <C-w>
+nnoremap <C-h>	:wincmd h<CR>
+nnoremap <C-j>	:wincmd j<CR>		
+nnoremap <C-k>	:wincmd k<CR>
+nnoremap <C-l>	:wincmd l<CR>
+
+" Better tabbing, block still selected when tab until done
+vnoremap < <gv
+vnoremap > >gv
+
+" Auto center when enter Insert mode
+" autocmd InsertEnter * norm zz
+
+"====================================================================="
+
 
 
 
@@ -125,30 +176,6 @@ colorscheme tokyonight
 
 "====================================================================="
 
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" ----- CUSTOM MAPPINGS ----- 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:mapleader = "\<Space>"			" Map Leader key to Space
-
-" Ctrl-S: save file
-nnoremap <C-S>			:w<CR>					
-nnoremap <leader>h		:wincmd h<CR>
-nnoremap <leader>j		:wincmd j<CR>
-nnoremap <leader>k		:wincmd k<CR>
-nnoremap <leader>l		:wincmd l<CR>
-
-" Remove search highlight with Esc x2 or Ctrl-C
-nnoremap <silent> <Esc><Esc>	:nohlsearch<CR>
-nnoremap <silent> <C-c>			:nohlsearch<CR>
-
-" Source current init.vim file: Space-s-o
-nnoremap <leader>so		:so %<CR>
-nnoremap <C-j>			:wincmd j<CR>		
-
-" TODO: MAP JUMPING BETWEEN WINDOWS TO CTRL
-
-"====================================================================="
 
 
 
@@ -192,6 +219,14 @@ nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
+
+" Auto complete Emmet with TAB <3 Only enable in HTML and CSS files
+if &filetype =~ 'html\|css'
+	let g:user_emmet_expandabbr_key='<Tab>'
+	imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+endif
+
+
 "====================================================================="
 
 
@@ -279,13 +314,10 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 nnoremap <leader>ut :UndotreeToggle<CR>
   
 
-
-
-
-
-
-
-
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" /* Goyo */ 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nnoremap <silent><leader>g :Goyo<CR>
 
 
 
