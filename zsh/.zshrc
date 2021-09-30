@@ -72,6 +72,7 @@ DISABLE_UPDATE_PROMPT="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+
 plugins=(
     git
     zsh-autosuggestions
@@ -123,17 +124,17 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-#__conda_setup="$('/Users/doroke/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-#if [ $? -eq 0 ]; then
-#    eval "$__conda_setup"
-#else
-#    if [ -f "/Users/doroke/miniconda3/etc/profile.d/conda.sh" ]; then
-#        . "/Users/doroke/miniconda3/etc/profile.d/conda.sh"
-   # else
-  #      export PATH="/Users/doroke/miniconda3/bin:$PATH"
- #   fi
-#fi
-#unset __conda_setup
+__conda_setup="$('/Users/doroke/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/doroke/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/doroke/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/doroke/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
 # <<< conda initialize <<<
 
 
@@ -152,23 +153,47 @@ elif [[ $WelcomeMsg == 2 ]]
 then
     cmatrix
     echo "Happy hacking 😎" | lolcat
-elif [[ $WelcomeMsg == 3 ]]
-then	
-	screenfetch
+# elif [[ $WelcomeMsg == 3 ]]
 else
     neofetch
+# else
+	# screenfetch
 fi
 printf "\n"
-
-
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/doroke/.sdkman"
 [[ -s "/Users/doroke/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/doroke/.sdkman/bin/sdkman-init.sh"
 source /usr/local/opt/powerlevel10k/powerlevel10k.zsh-theme
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+
+# Powerline-go
+# function powerline_precmd() {
+#     PS1="$($GOPATH/bin/powerline-go -error $? -jobs ${${(%):%j}:-0})"
+#
+#     # Uncomment the following line to automatically clear errors after showing
+#     # them once. This not only clears the error for powerline-go, but also for
+#     # everything else you run in that shell. Don't enable this if you're not
+#     # sure this is what you want.
+#
+#     set "?"
+# }
+#
+# function install_powerline_precmd() {
+#   for s in "${precmd_functions[@]}"; do
+#     if [ "$s" = "powerline_precmd" ]; then
+#       return
+#     fi
+#   done
+#   precmd_functions+=(powerline_precmd)
+# }
+#
+# if [ "$TERM" != "linux" ] && [ -f "$GOPATH/bin/powerline-go" ]; then
+#     install_powerline_precmd
+# fi
