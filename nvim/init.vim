@@ -35,7 +35,8 @@ set ruler
 set encoding=UTF-8
 set background=dark
 set updatetime=300				" faster completion
-" set paste						" disable auto comment, also will break autoindent :(
+" set clipboard+=unnamedplus		" copy and paste from clipboard
+set paste						" disable auto comment, also will break autoindent :(
 set wildmode=longest,list,full	" autocompletion
 
 "====================================================================="
@@ -109,12 +110,12 @@ call plug#end()
 
 " -> Set color scheme last to take effect
 " colorscheme gruvbox
-colorscheme synthwave84
+" colorscheme synthwave84
 " colorscheme codedark
 " colorscheme tokyonight
 " colorscheme material
 " colorscheme one
-" colorscheme dracula
+colorscheme dracula
 " colorscheme atom-dark
 
 "====================================================================="
@@ -153,6 +154,18 @@ vnoremap > >gv
 
 " Auto center when enter Insert mode
 " autocmd InsertEnter * norm zz
+
+" Quit terminal mode in with Ctr-C-C
+nnoremap <C-c><C-c>		<C-\><C-n>
+
+" Delete will no longer overwrite yank
+vnoremap p "0p
+nnoremap p "0p
+vnoremap P "0P
+nnoremap P "0P
+
+
+
 
 "====================================================================="
 
